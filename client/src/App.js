@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import "./pie.css"
+import FriendChart from './FriendChart';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+       <h2 style={{fontFamily:"Sans-serif",color:'white'}}>Steam Friends Forever </h2>
+      <input
+  className='idInput'
+  type="text"
+  id="steamID"
+  name="steamID"
+  required
+  minlength="17"
+  maxlength="17"
+  size="20" />
+  <button>Submit</button>
+      <FriendChart/>
     </div>
   );
 }
