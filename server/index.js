@@ -4,7 +4,7 @@ const path = require('path')
 require('dotenv').config()
 
 app.use(express.static(path.join(__dirname, '../client/build')));
-app.use(`/test`, require('./route/testRoute'));
+app.use(`/requestFriends`, require('./route/requestSortedFriends'));
 
 
 
