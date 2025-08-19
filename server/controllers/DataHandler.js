@@ -2,36 +2,65 @@ const SteamUser=require("../model/SteamUser");
 const api=require("../controllers/SteamAPI");
 const game= require("../model/Game");
 
-async function requestFriends(req,res)
+async function requestMainUser(req,res)
 {
-    if(game.allGames.size===0)
-    {
-        await game.readGameCSV();
-    }
-
-	const queries = req.query;
+    const queries = req.query;
     const mainSteamID=queries["steamid"]
     const data= await api.apiFriendsList(mainSteamID);
-    console.log("Friends List Loaded");
+    console.log("Main User Friends Loaded");
         if(data!==null)
         {
             let friendsSteamIds=[]
             friendsSteamIds.push(mainSteamID);
+            let mainUserJSON= {};
         // The friends list is usually at data.friendslist.friends
             if (data.friendslist && data.friendslist.friends) 
             {
-            data.friendslist.friends.forEach(element => {
-                friendsSteamIds.push(element.steamid);
+                data.friendslist.friends.forEach(element => {
+                    friendsSteamIds.push(element.steamid);
+                });
+
+                //what this does load all the basic data on the main user, and then the categories
+                //  associated with that user
+                let mainUser=await loadSteamUsers(friendsSteamIds);
+                mainUser.orderedGenres=await getSortedCategories(mainUser.id,4);
+                mainUserJSON.mainUser=mainUser;
+                console.log("Main User JSON Created");
+            }
+
+            res.status(200).json({ success: "Main user fully loaded", data: mainUserJSON});
+        }
+        else
+        {
+            res.status(404).json({ error: "Issue with loading main user" });
+        }
+        
+}
+
+async function requestFriends(req,res)
+{
+    console.log("Request Friend Recieved")
+     const mainJSON=req.body.data.mainUser;
+        if(mainJSON!==null)
+        {
+            const mainSteamID=mainJSON.id;
+            let friendsSteamIds=[]
+            friendsSteamIds.push(mainSteamID);
+        // The friends list is usually at data.friendslist.friends
+            if (mainJSON.friendList && mainJSON.friendList.friends) 
+            {
+            mainJSON.friendList.forEach(id => {
+                friendsSteamIds.push(id);
             });
 
             //TODO Replace this with other function
             let mainUser=await loadSteamUsers(friendsSteamIds);
-            mainUser.orderedGenres=await getSortedCategories(mainUser.id,4);
+            mainUser.orderedGenres=await getSortedCategories(mainSteamID,4);
             
             let sortedFriendUsers= await sortFriendsToCat(mainUser);
 
             let completeData = {};
-            completeData.mainUser = mainUser; // Keep as object, not string
+            //completeData.mainUser = mainUser; // Keep as object, not string
             completeData.genres = {}; // Initialize genres as an object
 
             mainUser.orderedGenres.forEach(genre => {
@@ -203,4 +232,4 @@ async function sortFriendsToCat(mainUser)
 
 
  
-module.exports ={requestFriends}
+module.exports ={requestFriends,requestMainUser}

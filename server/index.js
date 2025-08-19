@@ -4,6 +4,10 @@ const path = require('path')
 require('dotenv').config()
 
 app.use(express.static(path.join(__dirname, '../client/build')));
+app.use(`/requestMainUser`, require('./route/requestMainUser'));
+
+
+app.use(express.json());
 app.use(`/requestFriends`, require('./route/requestSortedFriends'));
 
 
@@ -29,3 +33,8 @@ app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
 });
+
+
+//This starts loading the CSV once the server boots up
+const game= require("./model/Game");
+game.readGameCSV();

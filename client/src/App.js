@@ -7,17 +7,76 @@ import loadingGIF from './loading.gif'
 
 function App() {
 const [steamID, setSteamID] = useState(-1);
-const [userData, setUserData] = useState(-1);
+const [mainUserData, setMainData] = useState(-1);
+const [sortedFriendData, setSortedData] = useState(-1);
+
 
   let baseURL="http://localhost:8080";
 
 
    
+
+  async function startNetworking(steamID) {
+    setSteamID(steamID);
+    try {
+        const mainUserResponse = await requestMainUser(steamID);
+        if (mainUserResponse) {
+            await requestSortedFriends();
+        }
+    } catch (error) {
+        console.error("Error in networking:", error);
+    }
+}
+
+
+  async function requestMainUser(steamID)
+  {
+    console.log("Requesting main user")
+    try 
+     {
+        const response = await fetch(
+          `${baseURL}`+"/requestMainUser?steamid="+steamID,
+        );
+        const json = await response.json();
+        setMainData(json);
+        console.log(json);
+      } catch (error) 
+      {
+        setMainData(-1);
+        console.error(error);
+      }
+  }
+
+  //this should use the main user thats already been sent
+  async function requestSortedFriends()
+  {
+    setSortedData(-1);
+    try 
+     {
+        const response = await fetch(`${baseURL}`+"/requestFriends", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+
+      },
+      body: JSON.stringify(mainUserData),
+    })
+        const json = await response.json();
+        setSortedData(json);
+        console.log(json);
+      } catch (error) 
+      {
+        setSortedData(-1);
+        console.error(error);
+      }
+  }
+    
   async function sendDataRequest(steamID)
   {
     console.log("Request Sent");
     setSteamID(steamID);
-    setUserData(-1);
+    //setUserData(-1);
     //setUserData(testDataRequest())
     try 
      {
@@ -25,11 +84,11 @@ const [userData, setUserData] = useState(-1);
           `${baseURL}`+"/requestFriends?steamid="+steamID,
         );
         const json = await response.json();
-        setUserData(json);
+        //setUserData(json);
         console.log(json);
       } catch (error) 
       {
-        setUserData(-1);
+        //setUserData(-1);
         console.error(error);
       }
   }
@@ -511,7 +570,7 @@ const [userData, setUserData] = useState(-1);
        <h2 style={{fontFamily:"Sans-serif",color:'white'}}>Steam Friends Forever</h2>
        <form onSubmit={e => {
     e.preventDefault();
-    sendDataRequest(steamID);
+    startNetworking(steamID);
   }}>
   <input
   className='idInput'
@@ -526,10 +585,8 @@ const [userData, setUserData] = useState(-1);
   }/>
   <button>Submit</button>
        </form >
-      
-      {(userData!==-1 && steamID!==-1) ? <FriendChart jsonData={userData} sendDataFunction={sendDataRequest}/> 
-      : (steamID!==-1) ? <img src={loadingGIF} alt="Loading" />
- : <p>Please submit a steam id of a profile with public data on!</p>}
+      {(mainUserData!==-1 && steamID!==-1) ? <FriendChart mainUserJSON={mainUserData} sortedFriendsJSON={sortedFriendData} sendDataFunction={sendDataRequest}/> 
+        : <p>Please submit a steam id of a profile with public data on!</p>}
     </div>
   );
 }

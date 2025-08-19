@@ -2,5 +2,5 @@ const express= require('express');
 const router =express.Router();
 const dataHandler = require('../controllers/DataHandler');
 
-router.post('/',dataHandler.requestFriends);
+router.get('/',dataHandler.requestMainUser);
 module.exports = router;

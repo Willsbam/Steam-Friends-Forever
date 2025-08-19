@@ -2,7 +2,7 @@ import React, { useEffect, useRef,useState } from 'react';
 import * as d3 from "d3";
 import "./pie.css";
 
-const FriendChart = ({jsonData, sendDataFunction}) => {
+const FriendChart = ({mainUserJSON,sortedFriendsJSON, sendDataFunction}) => {
   
   const chartRef = useRef(null);
   const [mainUser, setMainUser] = useState(-1);
@@ -16,30 +16,30 @@ const FriendChart = ({jsonData, sendDataFunction}) => {
   const colorCodes=["#f13434ff","#E35E1C","#417a9b","#FFC82C"]
 
   useEffect(() => {
-    console.log("CHANGE DMAMIT")
+
     d3.select(chartRef.current).selectAll("*").remove();
 
     //basically everytime this reloads this should go off
-    setMainUser(jsonData.data.mainUser);
+    setMainUser(mainUserJSON.data.mainUser);
     //process the jsonData to match sortedFriends
     let totalHours=0;
 
     let genreMap= new Map()
 
-    jsonData.data.mainUser.orderedGenres.forEach(genre => {
+    mainUserJSON.data.mainUser.orderedGenres.forEach(genre => {
       totalHours+=genre[1];
       genreMap.set(genre[0],genre[1]);
     });
 
-    const processedJSON = Object.entries(jsonData.data.genres).map(([genreName, dataFriends],index) => ({
-  name: genreName,
-  value: ((genreMap.get(genreName) || 0) / totalHours),
-  color: colorCodes[index % colorCodes.length], // You can assign colors dynamically if needed
-  friends: dataFriends
+//this creates the pie chart in such a way it can be displayed
+  const processedJSON = mainUserJSON.data.mainUser.orderedGenres.map((genre, index) => ({
+  name: genre[0],  
+  value: genre[1] / totalHours,  // genre hours is second element
+  color: colorCodes[index % colorCodes.length]
 }));
-    setSortedFriends(processedJSON);
-    createPieChart(processedJSON,jsonData.data.mainUser);
-  }, [jsonData]);
+//    setSortedFriends(processedJSON);
+    createPieChart(processedJSON,mainUserJSON.data.mainUser);
+  }, [mainUserJSON]);
 
   function createPieChart(data,user) {
 
@@ -81,8 +81,7 @@ const FriendChart = ({jsonData, sendDataFunction}) => {
       .join("path")
       .attr("fill", d => d.data.color)
       .attr("d", arc);
-
-      populatePieChart(svg,arcs,radius,defs);
+      //populatePieChart(svg,arcs,radius,defs);
     // });
 
     // Add section labels
