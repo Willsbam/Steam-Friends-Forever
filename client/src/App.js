@@ -16,6 +16,7 @@ const [eventSource, setEventSource] = useState(null);
 
 const baseURL="http://localhost:8080";
 
+const friendStack=[];
 
 async function startFriendProcessing()
 {
@@ -40,8 +41,21 @@ async function startFriendProcessing()
         {
 
             const data = JSON.parse(event.data);
-            console.log('Received:', event.data);
-            sortedFriendData
+            //data is a json object that contains various keys to genres with the 
+            //friends inside of them
+            //THis code effectively appends the friends genre and their user data to the friend
+            //stack, with the intent that the friendChart will one by one pop these off and add them
+            if(data.genres)
+            {
+                Object.keys(data.genres).forEach(genreName => 
+                {
+                    data.genres[genreName].forEach(friendUser => 
+                    {
+                        friendStack.push([genreName,friendUser])
+                    });
+                });      
+            }
+           
         };
         setEventSource(friendSource);
       } catch (error) 
@@ -62,7 +76,6 @@ function stopFriendProcessing()
 
 //this will dissapear soon enough
 useEffect(() => {
-    console.log("EE"+mainUserData);
 
     if (mainUserData && mainUserData !== -1 &&
          typeof mainUserData === 'object' && mainUserData.data) {
@@ -75,7 +88,6 @@ useEffect(() => {
     setSteamID(steamID);
     try {
         await requestMainUser(steamID);
-
         //moved this to the callback of setMainUser in request mainUser
         //startFriendProcessing();
         
@@ -623,28 +635,36 @@ useEffect(() => {
   }
   
   return (
-    <div className="App">
-       <h2 style={{fontFamily:"Sans-serif",color:'white'}}>Steam Friends Forever</h2>
-       <form onSubmit={e => {
-    e.preventDefault();
-    startNetworking(steamID);
-  }}>
-  <input
-  className='idInput'
-  type="text"
-  id="steamID"
-  name="steamID"
-  required
-  minlength="17"
-  maxlength="17"
-  size="20"  onChange={e =>
-    setSteamID(e.target.value)
-  }/>
-  <button>Submit</button>
-       </form >
-      {(mainUserData!==-1 && steamID!==-1) ? <FriendChart mainUserJSON={mainUserData} sortedFriendsJSON={sortedFriendData} sendDataFunction={sendDataRequest}/> 
-        : <p>Please submit a steam id of a profile with public data on!</p>}
-    </div>
+  <div className="App">
+    <h2>Steam Friends Forever</h2>
+    <form onSubmit={e => {
+      e.preventDefault();
+      startNetworking(steamID);
+    }}>
+      <input
+        className='idInput'
+        type="text"
+        id="steamID"
+        name="steamID"
+        required
+        minLength="17"
+        maxLength="17"
+        size="20"
+        onChange={e => setSteamID(e.target.value)}
+        placeholder="Enter Steam ID"
+      />
+      <button type="submit">Submit</button>
+    </form>
+    {(mainUserData !== -1 && steamID !== -1) ? 
+      <FriendChart 
+        mainUserJSON={mainUserData} 
+        sortedFriendsJSON={sortedFriendData} 
+        sendDataFunction={startNetworking} 
+        friendArray={friendStack}
+      /> 
+      : <p className="error-message">Please submit a steam id of a profile with public data on!</p>
+    }
+  </div>
   );
 }
 

@@ -1,7 +1,9 @@
 .App {
   text-align: center;
+  background-color: #1b2838;
+  min-height: 100vh;
+  padding: 20px;
 }
-
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -37,3 +39,54 @@
   }
 }
 
+
+.idInput {
+  background-color: #2a475e;
+  border: 1px solid #4c6b22;
+  border-radius: 2px;
+  color: #fff;
+  padding: 8px 12px;
+  font-size: 14px;
+  margin-right: 10px;
+  outline: none;
+}
+
+.idInput:focus {
+  border-color: #66c0f4;
+  box-shadow: 0 0 3px #66c0f4;
+}
+
+button {
+  background: linear-gradient(to bottom, #75b022 5%, #588a1b 95%);
+  border-radius: 2px;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  padding: 8px 20px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+  background: linear-gradient(to bottom, #8ed629 5%, #6aa621 95%);
+}
+
+button:active {
+  background: linear-gradient(to bottom, #588a1b 5%, #75b022 95%);
+}
+
+h2 {
+  color: #fff;
+  font-family: "Motiva Sans", Sans-serif;
+  margin-bottom: 30px;
+}
+
+form {
+  margin-bottom: 30px;
+}
+
+.error-message {
+  color: #fff;
+  font-size: 14px;
+  margin-top: 20px;
+}
