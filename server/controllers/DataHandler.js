@@ -1,7 +1,7 @@
 const SteamUser=require("../model/SteamUser");
 const api=require("../controllers/SteamAPI");
 const game= require("../model/Game");
-
+const {batchSortFriendsToCat,sortFriendsToCat,getSortedCategories,loadSteamUsers}=require("./HelperMethods");
 async function requestMainUser(req,res)
 {
     const queries = req.query;
@@ -47,13 +47,12 @@ async function requestFriends(req,res)
             let friendsSteamIds=[]
             friendsSteamIds.push(mainSteamID);
         // The friends list is usually at data.friendslist.friends
-            if (mainJSON.friendList && mainJSON.friendList.friends) 
+            if (mainJSON.friendList && mainJSON.friendList) 
             {
             mainJSON.friendList.forEach(id => {
                 friendsSteamIds.push(id);
             });
 
-            //TODO Replace this with other function
             let mainUser=await loadSteamUsers(friendsSteamIds);
             mainUser.orderedGenres=await getSortedCategories(mainSteamID,4);
             
@@ -62,7 +61,7 @@ async function requestFriends(req,res)
             let completeData = {};
             //completeData.mainUser = mainUser; // Keep as object, not string
             completeData.genres = {}; // Initialize genres as an object
-
+            
             mainUser.orderedGenres.forEach(genre => {
                 // genre[0] is the genre name
                 // Get the array of friends for this genre from the Map
@@ -83,153 +82,15 @@ async function requestFriends(req,res)
         }
 } 
 
-//this load all the of users and their data into SteamUser.allSteamUsers map
-//It will also return a main user 
-async function loadSteamUsers(friendIds) {
-    let ids = "";
-    friendIds.forEach(id => {
-        ids = ids + id + ",";
-    });
-    
-    const players = await api.apiPlayerSummaries(ids);
-    
-    if (players !== null) {
-        // First pass - add all players to the map
-        players.forEach(player => {
-            if (!SteamUser.allSteamUsers.has(player.steamid)) {
-                let newUser = new SteamUser.SteamUser(player.steamid, player.personaname, player.avatarfull);
-                SteamUser.allSteamUsers.set(player.steamid, newUser);
-            }
-        });
-        
-        // Second pass - create main user from the map (so it already exists) and add friends
-        let mainUser = SteamUser.allSteamUsers.get(friendIds[0]);
-        if (!mainUser) {
-            console.log("Error: Main user not found in map! ID:", friendIds[0]);
-            return null;
-        }
-        
-        // Add friends to main user
-        players.forEach(player => {
-            if (player.steamid !== mainUser.id) {  // Don't add self as friend
-                mainUser.addFriend(player.steamid);
-            }
-        });
-        
-        return mainUser;
-    } else {
-        console.log("Timeout at loading player summaries");
-        return null;
-    }    
-}
 
-//this should return an arraylist of pair with the game
-async function getUsersGames(steamId){
-    let gameWHours=[];
-    const ownedGames = await api.apiRequestOwnedGames(steamId);
-    if(ownedGames!=null)
-    {
-        ownedGames.forEach((game) =>{
-            let gameID=game["appid"];
-            let playtime= +game["playtime_forever"];
-            gameWHours.push([gameID,playtime]);
-        });
-        gameWHours.sort((a, b) => b[1] - a[1]);
-        return gameWHours;
-    }
-    else
-    {
-        //probably if the player has private on
-        return null;
-    }
-}
 
-async function getSortedCategories(steamId, numCat)
+async function batchRequestFriends(req,res,mainJSON,batchAmount)
 {
-    if(game.allGames.size!=0)
-    {
-        let gamesWHours= await getUsersGames(steamId);
-        let categoriesTotal= new Map();
-        if(gamesWHours!=null)
-        {
-            gamesWHours.forEach((entry) => {
-            let id=entry[0];
-            if(game.allGames.has(id+""))
-            {
-                 game.allGames.get(id+"").inputCategories.forEach((category) =>
-                {
-                    if(!categoriesTotal.has(category))
-                    {
-                        categoriesTotal.set(category,0);
-                    }
-                    categoriesTotal.set(category,categoriesTotal.get(category)+Math.round(entry[1]/60))
-                });
-            }
-        });
-        let topCategories = [];
-        for(i=0;i<numCat;i++)
-        {
-            let topHours=0;
-            let topCategory;
 
-            categoriesTotal.forEach((value,key) =>{
-                if(value>topHours)
-                {
-                    topHours=value;
-                    topCategory=key;
-                }
-            });
-            topCategories.push([topCategory,topHours]);
-            categoriesTotal.delete(topCategory);
+        if(mainJSON)
+        {
+           batchSortFriendsToCat(mainJSON,3,res);
         }
-       
-        return topCategories;
-        }
-        return null;
-        
-    }
-    else
-    {
-        console.log("You didn't load the games yet bruv")
-    }
 }
 
-//this should return an array the matches the number of categories defined by the main user
-//with all the friends of the main user sorted into whatever fits their category the best
-async function sortFriendsToCat(mainUser)
-{
-    //Key should be category, and the value should be an array of steam users
-    let sortedFriends= new Map();
-    mainUser.orderedGenres.forEach(genre => {
-        sortedFriends.set(genre[0],[]);
-    });
-
-
-    for (const friendId of mainUser.friendList) 
-    {
-        let categories = await getSortedCategories(friendId, 10);
-        if(categories!=null)
-        {
-        let foundCat=false;
-         categories.forEach(friendCat => {
-            if(sortedFriends.has(friendCat[0]) && foundCat===false)
-            {
-                sortedFriends.get(friendCat[0]).push(SteamUser.allSteamUsers.get(friendId));
-                foundCat=true;
-            }
-        });
-        }
-       
-    }
-    return sortedFriends;
-
-}
-
-
-
-
-
-
-
- 
-module.exports ={requestFriends,requestMainUser}
+module.exports ={requestFriends,requestMainUser,batchRequestFriends}

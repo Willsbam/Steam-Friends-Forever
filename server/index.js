@@ -4,11 +4,14 @@ const path = require('path')
 require('dotenv').config()
 
 app.use(express.static(path.join(__dirname, '../client/build')));
-app.use(`/requestMainUser`, require('./route/requestMainUser'));
-
-
 app.use(express.json());
+
+app.use(`/requestMainUser`, require('./route/requestMainUser'));
 app.use(`/requestFriends`, require('./route/requestSortedFriends'));
+
+
+app.use('/friendBatches', require('./route/sendBatchedFriends'));
+
 
 
 

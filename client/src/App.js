@@ -2,27 +2,83 @@ import './App.css';
 import "./pie.css"
 import FriendChart from './FriendChart';
 import React from 'react';
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import loadingGIF from './loading.gif'
 
 function App() {
 const [steamID, setSteamID] = useState(-1);
 const [mainUserData, setMainData] = useState(-1);
 const [sortedFriendData, setSortedData] = useState(-1);
+const [sessionID, setSessionID] = useState(-1);
+
+const [eventSource, setEventSource] = useState(null);
 
 
-  let baseURL="http://localhost:8080";
+const baseURL="http://localhost:8080";
 
 
-   
+async function startFriendProcessing()
+{
+    console.log("Starting Friend Processing")
+    setSessionID(-1);
+    try 
+     {
+        const response = await fetch(`${baseURL}`+"/friendBatches/start", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            } ,
+            body: JSON.stringify(mainUserData),
+        });
+        const json = await response.json();
+        console.log(json);
+        setSessionID(json.id);
+        
+        const friendSource = new EventSource(baseURL+`/friendBatches?sessionID=${json.id}`);
+        friendSource.onmessage = function(event) 
+        {
+
+            const data = JSON.parse(event.data);
+            console.log('Received:', event.data);
+            sortedFriendData
+        };
+        setEventSource(friendSource);
+      } catch (error) 
+      {
+        setSessionID(-1);
+        console.error(error);
+      }
+  }
+    
+function stopFriendProcessing()
+{
+    if (eventSource) 
+        {
+            eventSource.close();
+            setEventSource(null);
+        }
+}
+
+//this will dissapear soon enough
+useEffect(() => {
+    console.log("EE"+mainUserData);
+
+    if (mainUserData && mainUserData !== -1 &&
+         typeof mainUserData === 'object' && mainUserData.data) {
+        startFriendProcessing();
+         //requestSortedFriends();
+    }
+}, [mainUserData]); // This will trigger when mainUserData updates
 
   async function startNetworking(steamID) {
     setSteamID(steamID);
     try {
-        const mainUserResponse = await requestMainUser(steamID);
-        if (mainUserResponse) {
-            await requestSortedFriends();
-        }
+        await requestMainUser(steamID);
+
+        //moved this to the callback of setMainUser in request mainUser
+        //startFriendProcessing();
+        
     } catch (error) {
         console.error("Error in networking:", error);
     }
@@ -53,17 +109,19 @@ const [sortedFriendData, setSortedData] = useState(-1);
     setSortedData(-1);
     try 
      {
-        const response = await fetch(`${baseURL}`+"/requestFriends", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        const response = await fetch(`${baseURL}`+"/requestFriends", 
+        {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
 
-      },
-      body: JSON.stringify(mainUserData),
-    })
+            } ,
+            body: JSON.stringify(mainUserData),
+        })
         const json = await response.json();
         setSortedData(json);
+    
         console.log(json);
       } catch (error) 
       {
@@ -85,7 +143,6 @@ const [sortedFriendData, setSortedData] = useState(-1);
         );
         const json = await response.json();
         //setUserData(json);
-        console.log(json);
       } catch (error) 
       {
         //setUserData(-1);
