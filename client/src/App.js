@@ -6,6 +6,8 @@ import {useState,useEffect} from 'react';
 import loadingGIF from './loading.gif'
 
 function App() {
+// Add new state for transition
+const [isTransitioning, setIsTransitioning] = useState(false);
 const [steamID, setSteamID] = useState(-1);
 const [mainUserData, setMainData] = useState(-1);
 const [sortedFriendData, setSortedData] = useState(-1);
@@ -101,14 +103,14 @@ useEffect(() => {
 }, [mainUserData]); // This will trigger when mainUserData updates
 
   async function startNetworking(steamID) {
+    setIsTransitioning(true);
     setSteamID(steamID);
     try {
         await requestMainUser(steamID);
-        //moved this to the callback of setMainUser in request mainUser
-        //startFriendProcessing();
-        
     } catch (error) {
         console.error("Error in networking:", error);
+    } finally {
+        setIsTransitioning(false);
     }
 }
 
@@ -203,10 +205,22 @@ useEffect(() => {
         sendDataFunction={startNetworking} 
         friendArray={friendStack}
       /> 
-      : <p className="error-message">Please submit a steam id of a profile with public data on!</p>
+      : (<div>
+<p className="error-message">Please submit a steam id of a profile with public data on! </p>
+<p className="error-message">For an example, you can use my ID: 76561198283655599</p>
+    </div>
+)
     }
-    {(proccessing) ? <h3><b>Loading Friends...</b></h3> : (!proccessing && mainUserData!=-1) 
-    ? <h3><b>Click on any friend to delve into their friend chart</b></h3> :null}
+    
+    <div className="status-message">
+      {isTransitioning ? (
+        <h3><b>Loading New Profile...</b></h3>
+      ) : proccessing ? (
+        <h3><b>Loading Friends...</b></h3>
+      ) : mainUserData !== -1 ? (
+        <h3><b>Click on any friend to delve into their friend chart</b></h3>
+      ) : null}
+    </div>
   </div>
   );
 }
