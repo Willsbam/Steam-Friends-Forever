@@ -39,5 +39,7 @@ app.listen(PORT, () => {
 
 
 //This starts loading the CSV once the server boots up
-const game= require("./model/Game");
-game.readGameCSV();
+const game = require("./model/Game");
+game.readGameCSV().catch(err => {
+    console.error("Error reading game CSV:", err);
+});
