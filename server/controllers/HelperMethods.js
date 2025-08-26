@@ -226,7 +226,6 @@ async function batchSortFriendsToCat(mainUser, batchAmount, res) {
         
         res.write(`data: ${JSON.stringify(batchedData)}\n\n`);
     }
-    
     res.write(`data: ${JSON.stringify({
         type: 'complete',
         message: 'All friend data processed'

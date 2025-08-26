@@ -2,7 +2,6 @@
   text-align: center;
   background-color: #1b2838;
   min-height: 100vh;
-  padding: 20px;
 }
 .App-logo {
   height: 40vmin;
@@ -76,6 +75,12 @@ button:active {
 }
 
 h2 {
+  color: #fff;
+  font-family: "Motiva Sans", Sans-serif;
+  margin-bottom: 30px;
+}
+
+h3 {
   color: #fff;
   font-family: "Motiva Sans", Sans-serif;
   margin-bottom: 30px;
