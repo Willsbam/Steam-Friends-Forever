@@ -18,7 +18,7 @@ const [proccessing, setProccessing] = useState(false);
 
 
 
-const baseURL="http://localhost:8080";
+const baseURL=process.env.URL;
 
 const friendStack=[];
 
