@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/Steam-Friends-Forever/static/css/main.9fd4f591.css",
+    "main.js": "/Steam-Friends-Forever/static/js/main.c26f432b.js",
+    "static/media/loading.gif": "/Steam-Friends-Forever/static/media/loading.803f24369a085e35482e.gif",
+    "index.html": "/Steam-Friends-Forever/index.html",
+    "main.9fd4f591.css.map": "/Steam-Friends-Forever/static/css/main.9fd4f591.css.map",
+    "main.c26f432b.js.map": "/Steam-Friends-Forever/static/js/main.c26f432b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9fd4f591.css",
+    "static/js/main.c26f432b.js"
+  ]
+}
