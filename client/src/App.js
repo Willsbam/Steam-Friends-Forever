@@ -18,7 +18,7 @@ const [proccessing, setProccessing] = useState(false);
 
 
 
-const baseURL=process.env.URL;
+const baseURL='https://willsbam.github.io/Steam-Friends-Forever';
 
 const friendStack=[];
 

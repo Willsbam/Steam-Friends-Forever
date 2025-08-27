@@ -1,14 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "homepage": "https://willsbam.github.io/Steam-Friends-Forever",
   "main": "index.js",
   "scripts": {
     "start": "cd ../client && npm run build && cd ../server && node index.js",
     "dev": "nodemon server",
     "dualCompile": "cd ../client && npm run build && cd ../server && nodemon run",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    
   },
   "author": "",
   "license": "ISC",
