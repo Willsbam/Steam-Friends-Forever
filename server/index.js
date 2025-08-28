@@ -3,7 +3,9 @@ const app = express();
 const path = require('path')
 require('dotenv').config()
 
-app.use(express.static(path.join(__dirname, './moved-build')));
+let clientBuildPath='./moved-build';
+
+app.use(express.static(path.join(__dirname, clientBuildPath)));
 app.use(express.json());
 
 app.use(`/requestMainUser`, require('./route/requestMainUser'));
@@ -22,7 +24,7 @@ app.use((req, res, next) => {
         res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
         res.header('Expires', '-1');
         res.header('Pragma', 'no-cache');
-        res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+        res.sendFile(path.join(__dirname, clientBuildPath, 'index.html'));
     }
 });
 
