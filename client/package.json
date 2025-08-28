@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "homepage": "https://willsbam.github.io/Steam-Friends-Forever",
+  "homepage": "http://localhost:8080",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
