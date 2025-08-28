@@ -3,7 +3,7 @@ const app = express();
 const path = require('path')
 require('dotenv').config()
 
-let clientBuildPath='./moved-build';
+let clientBuildPath='./build';
 
 app.use(express.static(path.join(__dirname, clientBuildPath)));
 app.use(express.json());
