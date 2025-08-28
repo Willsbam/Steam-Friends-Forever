@@ -46,6 +46,7 @@ async function startFriendProcessing()
         {
 
             const data = JSON.parse(event.data);
+            console.log(data);
             //data is a json object that contains various keys to genres with the 
             //friends inside of them
             //THis code effectively appends the friends genre and their user data to the friend
