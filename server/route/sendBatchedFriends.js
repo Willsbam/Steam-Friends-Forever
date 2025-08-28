@@ -32,25 +32,8 @@ router.get('/', (req, res) => {
 
     dataHandler.batchRequestFriends(req,res,mainUserJSON);
     
-   
 
-    // let counter = 0;
-    // const interval = setInterval(() => {
-    //     counter++;
-    //     const data = {
-    //         type: 'test',
-    //         message: `Hello from server - ${counter}`,
-    //         timestamp: new Date().toISOString()
-    //     };
-    //     res.write(`data: ${JSON.stringify(data)}\n\n`);
-
-    //     // Stop after 10 messages for testing
-    //     if (counter >= 10) {
-    //         clearInterval(interval);
-    //         res.write(`data: ${JSON.stringify({ type: 'complete', message: 'Stream ended' })}\n\n`);
-    //         res.end();
-    //     }
-    // }, 2000);
+    
 
 
     // Clean up when client disconnects

@@ -197,6 +197,7 @@ async function batchSortFriendsToCat(mainUser, batchAmount, res) {
                 });
                 
                 // Send the data
+                console.log("Writing da data");
                 res.write(`data: ${JSON.stringify(batchedData)}\n\n`);
                 
                 // Clear the sorted friends for the next batch

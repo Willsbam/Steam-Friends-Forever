@@ -21,9 +21,6 @@ const FriendChart = ({mainUserJSON,sortedFriendsJSON, sendDataFunction,friendArr
   const innerRadius=0;
 
 
-
-
-  
   useEffect(() => {
     d3.select(chartRef.current).selectAll("*").remove();
     //basically everytime this reloads this should go off

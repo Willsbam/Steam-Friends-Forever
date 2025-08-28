@@ -13,6 +13,7 @@ app.use(`/requestFriends`, require('./route/requestSortedFriends'));
 
 
 app.use('/friendBatches', require('./route/sendBatchedFriends'));
+// This code makes sure that any request that does not matches a static file
 
 // This code makes sure that any request that does not matches a static file
 // in the build folder, will just serve index.html. Client side routing is
