@@ -6,13 +6,13 @@ require('dotenv').config();
 
 // Add proper CORS handling
 app.use(cors({
-  origin: ['https://steam-friends-forever-uf6oi.ondigitalocean.app/','http://localhost:8080/'],
+  origin: ['https://steam-friends-forever-uf6oi.ondigitalocean.app/'],
   credentials: false,
   methods: ['GET', 'POST']
 }));
 
-// let clientBuildPath='./build';
-let clientBuildPath='../client/build';
+let clientBuildPath='./build';
+// let clientBuildPath='../client/build';
 
 
 app.use(express.static(path.join(__dirname, clientBuildPath)));
