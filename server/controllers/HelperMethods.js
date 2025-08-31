@@ -199,7 +199,7 @@ async function batchSortFriendsToCat(mainUser, batchAmount, res) {
                 // Send the data
                 console.log("Writing da data");
                 res.write(`data: ${JSON.stringify(batchedData)}\n\n`);
-                res.flush();
+                res.flushHeaders();
 
 
                 // Clear the sorted friends for the next batch
@@ -228,14 +228,13 @@ async function batchSortFriendsToCat(mainUser, batchAmount, res) {
         });
         
         res.write(`data: ${JSON.stringify(batchedData)}\n\n`);
-        res.flush();
+        res.flushHeaders();
     }
     res.write(`data: ${JSON.stringify({
         type: 'complete',
         message: 'All friend data processed'
     })}\n\n`);
-    res.flush();
-
+    res.flushHeaders();
 }
 
 module.exports ={batchSortFriendsToCat,sortFriendsToCat,getSortedCategories,getUsersGames,loadSteamUsers}
