@@ -18,7 +18,7 @@ const [proccessing, setProccessing] = useState(false);
 
 
 
-const baseURL='https://steam-friends-forever-uf6oi.ondigitalocean.app';
+const baseURL='https://steam-friends-forever.fly.dev';
 //const baseURL='http://localhost:8080';
 
 const friendStack=[];

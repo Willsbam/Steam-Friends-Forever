@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // Add proper CORS handling
 app.use(cors({
-  origin: ['https://steam-friends-forever-uf6oi.ondigitalocean.app'],
+  origin: ['https://steam-friends-forever.fly.dev'],
   credentials: false,
   methods: ['GET', 'POST']
 }));
