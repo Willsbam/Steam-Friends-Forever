@@ -23,8 +23,13 @@ router.get('/', (req, res) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': 'https://steam-friends-forever-uf6oi.ondigitalocean.app',
+        'Access-Control-Allow-Credentials': 'false',
+        "X-Accel-Buffering": "no",
+        'Content-Encoding':'none'
     });
+      res.flushHeaders();
+
     const mainUserJSON=activeSessions.get(parseInt(req.query.sessionID));
 
 

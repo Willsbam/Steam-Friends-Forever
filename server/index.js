@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // Add proper CORS handling
 app.use(cors({
-  origin: ['https://steam-friends-forever-uf6oi.ondigitalocean.app/'],
+  origin: ['https://steam-friends-forever-uf6oi.ondigitalocean.app'],
   credentials: false,
   methods: ['GET', 'POST']
 }));
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 
 
 // Start the server
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
