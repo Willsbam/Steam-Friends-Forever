@@ -18,8 +18,8 @@ const [proccessing, setProccessing] = useState(false);
 
 
 
-const baseURL='https://steam-friends-forever.fly.dev';
-//const baseURL='http://localhost:8080';
+//const baseURL='https://steam-friends-forever.fly.dev';
+const baseURL='http://localhost:3000';
 
 const friendStack=[];
 
