@@ -19,8 +19,8 @@ const [mainUserIssue, setMUserIssue] = useState(-1);
 
 
 
-const baseURL='http://localhost:3000';
-//const baseURL='https://steam-friends-forever.com';
+//const baseURL='http://localhost:3000';
+const baseURL='https://steam-friends-forever.com';
 
 const friendStack=[];
 
