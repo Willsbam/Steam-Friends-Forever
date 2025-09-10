@@ -15,11 +15,12 @@ const [sessionID, setSessionID] = useState(-1);
 
 const [eventSource, setEventSource] = useState(null);
 const [proccessing, setProccessing] = useState(false);
+const [mainUserIssue, setMUserIssue] = useState(-1);
 
 
 
-//const baseURL='https://steam-friends-forever.fly.dev';
-const baseURL='https://steam-friends-forever.com';
+const baseURL='http://localhost:3000';
+//const baseURL='https://steam-friends-forever.com';
 
 const friendStack=[];
 
@@ -38,7 +39,6 @@ async function startFriendProcessing()
             body: JSON.stringify(mainUserData),
         });
         const json = await response.json();
-        console.log(json);
         setSessionID(json.id);
         
         const friendSource = new EventSource(baseURL+`/friendBatches?sessionID=${json.id}`);
@@ -47,7 +47,6 @@ async function startFriendProcessing()
         {
 
             const data = JSON.parse(event.data);
-            console.log(data);
             //data is a json object that contains various keys to genres with the 
             //friends inside of them
             //THis code effectively appends the friends genre and their user data to the friend
@@ -68,11 +67,11 @@ async function startFriendProcessing()
             }
             else
             {
-                console.log(data)
                 if(data.type && data.type==="complete")
                 {
                     setProccessing(false);
                 }
+                stopFriendProcessing();
             }
            
         };
@@ -126,10 +125,25 @@ useEffect(() => {
           `${baseURL}`+"/requestMainUser?steamid="+steamID,
         );
         const json = await response.json();
-        setMainData(json);
+        setMUserIssue(false);
+        console.log(json);
+        if (("error" in json) || 
+            !json.data || 
+            !json.data.mainUser || 
+            json.data.mainUser.orderedGenres === null || 
+            (json.data.mainUser.friendList && json.data.mainUser.friendList.length === 0))
+        {
+            setMUserIssue(true);
+        } 
+        else 
+        {
+            setMainData(json);
+        }
       } catch (error) 
       {
-        setMainData(-1);
+         setMUserIssue(true);
+         setMainData(-1)
+        console.log("Request Main User Error")
         console.error(error);
       }
   }
@@ -207,12 +221,31 @@ useEffect(() => {
         sendDataFunction={startNetworking} 
         friendArray={friendStack}
       /> 
-      : (<div>
-<p className="error-message">Please submit a steam id of a profile with public data on! </p>
-<p className="error-message">For an example, you can use my ID: 76561198283655599</p>
-    </div>
-)
+      : (
+        <div className="info-box">
+          <h3 className="info-title">How to Find Your Steam ID</h3>
+          <div className="info-content">
+            <p>Please submit a steam id of a profile with public data.</p>
+            <p>Example ID: <code>76561198283655599</code></p>
+            <p>Find your Steam ID at: <a href="https://steamidfinder.com" target="_blank" rel="noopener noreferrer">steamidfinder.com</a></p>
+          </div>
+        </div>
+      )
     }
+    {(mainUserIssue===true) && (
+      <div className="error-box">
+        <h3 className="error-title">Error Loading Profile</h3>
+        <div className="error-content">
+          <p><b>Unable to load Steam profile because:</b></p>
+          <ul>
+            <li>The Steam ID may be invalid, or</li>
+            <li>The profile's games and friends list are private</li>
+          </ul>
+          <p>Please try a different Steam ID with public settings.</p>
+        </div>
+      </div>
+      
+    )}
     
     <div className="status-message">
       {isTransitioning ? (

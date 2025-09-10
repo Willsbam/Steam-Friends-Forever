@@ -22,7 +22,11 @@ const FriendChart = ({mainUserJSON,sortedFriendsJSON, sendDataFunction,friendArr
 
 
   useEffect(() => {
-    d3.select(chartRef.current).selectAll("*").remove();
+    if(mainUserJSON!=-1)
+    {
+    
+
+        d3.select(chartRef.current).selectAll("*").remove();
     //basically everytime this reloads this should go off
     setMainUser(mainUserJSON.data.mainUser);
     //process the jsonData to match sortedFriends
@@ -32,23 +36,23 @@ const FriendChart = ({mainUserJSON,sortedFriendsJSON, sendDataFunction,friendArr
       totalHours+=genre[1];
       genreMap.set(genre[0],genre[1]);
     });
-//this creates the pie chart in such a way it can be displayed
-  const processedJSON = mainUserJSON.data.mainUser.orderedGenres.map((genre, index) => ({
-  name: genre[0],  
-  value: genre[1] / totalHours,  // genre hours is second element
-  color: colorCodes[index % colorCodes.length]
-}));
-//    setSortedFriends(processedJSON);
-    createPieChart(processedJSON,mainUserJSON.data.mainUser);
-  //this begins handling the data, adding more circles every few seconds
- const interval = setInterval(() => 
-  {
-    batchPopulatePieChart(svgRef.current, arcsRef.current, radius, defRef.current); // Pass SVG selection
-  }, 100);
+    //this creates the pie chart in such a way it can be displayed
+      const processedJSON = mainUserJSON.data.mainUser.orderedGenres.map((genre, index) => ({
+      name: genre[0],  
+      value: genre[1] / totalHours,  // genre hours is second element
+      color: colorCodes[index % colorCodes.length]
+    }));
+    //    setSortedFriends(processedJSON);
+        createPieChart(processedJSON,mainUserJSON.data.mainUser);
+      //this begins handling the data, adding more circles every few seconds
+    const interval = setInterval(() => 
+      {
+        batchPopulatePieChart(svgRef.current, arcsRef.current, radius, defRef.current); // Pass SVG selection
+      }, 100);
 
 
-  return () => clearInterval(interval); 
-
+      return () => clearInterval(interval); 
+        }
   }, [mainUserJSON]);
   
   function createPieChart(data,user) {
@@ -283,11 +287,11 @@ useEffect(() => {
 
   function batchPopulatePieChart(svg, arcs, radius, defs)
   {
-    console.log(friendArray);
+    //console.log(friendArray);
 
 
     if (!svg || !arcs || friendArray.length<=0) {
-      console.log("Missing required data for populatePieChart");
+      //console.log("Missing required data for populatePieChart");
       return;
     }
     let count=0;
