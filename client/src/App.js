@@ -19,8 +19,8 @@ const [mainUserIssue, setMUserIssue] = useState(-1);
 
 
 
-const baseURL='http://localhost:3000';
-//const baseURL='https://steam-friends-forever.com';
+//const baseURL='http://localhost:3000';
+const baseURL='https://steam-friends-forever.com';
 
 const friendStack=[];
 
@@ -196,6 +196,10 @@ useEffect(() => {
   
   return (
   <div className="App">
+    <title>Steam Friends Forever: Sort your Steam Friends off genre</title>
+    <meta name="A fullstack web app that takes a users steamID, finds the useres most played genres, and then
+    sorts the friends that similarly have the most hours in specified genres"></meta>
+
     <h2>Steam Friends Forever</h2>
     <form onSubmit={e => {
       e.preventDefault();
@@ -260,9 +264,10 @@ useEffect(() => {
         </div>
       )
     }
-    
-    
-    
+
+    <div className="credits-section">
+      <p>Based on a project created by William Bramley, Eduardo Steinmann, and Kasra Karkheiran</p>
+    </div>
   </div>
   );
 }

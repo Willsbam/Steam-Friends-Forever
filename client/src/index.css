@@ -12,3 +12,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.credits-section {
+  margin-top: 2rem;
+  padding: 0.5rem;
+  border-top: 1px solid #2a3f5f;
+  color: #8f98a0;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.credits-section p {
+  margin: 0;
+  opacity: 0.8;
+}
