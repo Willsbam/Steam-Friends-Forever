@@ -19,8 +19,8 @@ const [mainUserIssue, setMUserIssue] = useState(-1);
 
 
 
-//const baseURL='http://localhost:3000';
-const baseURL='https://steam-friends-forever.com';
+const baseURL='http://localhost:3000';
+//const baseURL='https://steam-friends-forever.com';
 
 const friendStack=[];
 
@@ -215,6 +215,33 @@ useEffect(() => {
       />
       <button type="submit">Submit</button>
     </form>
+    <div className="status-message">
+      {isTransitioning ? (
+        <h3><b>Loading New Profile...</b></h3>
+      ) : proccessing ? (
+        <h3><b>Loading Friends...</b></h3>
+      ) : mainUserData !== -1 && friendStack.length > 0 ? (
+        <h3><b>Click on any friend to delve into their friend chart</b></h3>
+      ) : mainUserData !== -1 ? (
+        <h3><b>Loading Friends...</b></h3>
+      ) : null}
+    </div>
+
+    {(mainUserIssue===true) && (
+      <div className="error-box">
+        <h3 className="error-title">Error Loading Profile</h3>
+        <div className="error-content">
+          <p><b>Unable to load Steam profile because:</b></p>
+          <ul>
+            <li>The Steam ID may be invalid, or</li>
+            <li>The profile's games and friends list are private</li>
+          </ul>
+          <p>Please try a different Steam ID with public settings.</p>
+        </div>
+      </div>
+      
+    )}
+    
     {(mainUserData !== -1 && steamID !== -1) ? 
       <FriendChart 
         mainUserJSON={mainUserData} 
@@ -233,32 +260,9 @@ useEffect(() => {
         </div>
       )
     }
-    {(mainUserIssue===true) && (
-      <div className="error-box">
-        <h3 className="error-title">Error Loading Profile</h3>
-        <div className="error-content">
-          <p><b>Unable to load Steam profile because:</b></p>
-          <ul>
-            <li>The Steam ID may be invalid, or</li>
-            <li>The profile's games and friends list are private</li>
-          </ul>
-          <p>Please try a different Steam ID with public settings.</p>
-        </div>
-      </div>
-      
-    )}
     
-    <div className="status-message">
-      {isTransitioning ? (
-        <h3><b>Loading New Profile...</b></h3>
-      ) : proccessing ? (
-        <h3><b>Loading Friends...</b></h3>
-      ) : mainUserData !== -1 && friendStack.length > 0 ? (
-        <h3><b>Click on any friend to delve into their friend chart</b></h3>
-      ) : mainUserData !== -1 ? (
-        <h3><b>Loading Friends...</b></h3>
-      ) : null}
-    </div>
+    
+    
   </div>
   );
 }
