@@ -232,6 +232,9 @@ async function batchSortFriendsToCat(mainUser, batchAmount, res) {
         type: 'complete',
         message: 'All friend data processed'
     })}\n\n`);
+
+    //SEE IF THIS FIXES IT
+    res.end();
 }
 
 module.exports ={batchSortFriendsToCat,sortFriendsToCat,getSortedCategories,getUsersGames,loadSteamUsers}

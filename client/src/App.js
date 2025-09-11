@@ -67,15 +67,17 @@ async function startFriendProcessing()
             }
             else
             {
+                  friendSource.close();
                 if(data.type && data.type==="complete")
                 {
                     setProccessing(false);
                 }
                 stopFriendProcessing();
+
             }
            
         };
-
+        
         setEventSource(friendSource);
       } catch (error) 
       {
@@ -86,9 +88,8 @@ async function startFriendProcessing()
     
 function stopFriendProcessing()
 {
-    if (eventSource) 
+    if (eventSource!=null) 
         {
-            eventSource.close();
             setEventSource(null);
         }
 }
