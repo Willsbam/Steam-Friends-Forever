@@ -224,10 +224,8 @@ useEffect(() => {
         <h3><b>Loading New Profile...</b></h3>
       ) : proccessing ? (
         <h3><b>Loading Friends...</b></h3>
-      ) : mainUserData !== -1 && friendStack.length > 0 ? (
+      ) : (proccessing===false && isTransitioning===false && mainUserData !== -1 && friendStack.length > 0) ? (
         <h3><b>Click on any friend to delve into their friend chart</b></h3>
-      ) : mainUserData !== -1 ? (
-        <h3><b>Loading Friends...</b></h3>
       ) : null}
     </div>
 
